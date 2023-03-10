@@ -3,6 +3,7 @@
     public enum GameVariant
     {
         X,
-        O
+        O,
+        Clear
     }
 }
