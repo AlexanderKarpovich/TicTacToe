@@ -1,8 +1,19 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using TicTacToeGame.Data;
+using TicTacToeGame.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")!);
+});
+builder.Services.AddIdentity<GameUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
 
 var app = builder.Build();
 
