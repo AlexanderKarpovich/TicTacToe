@@ -30,4 +30,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+await SeedIdentityData.EnsurePopulated(app);
+
 app.Run();
