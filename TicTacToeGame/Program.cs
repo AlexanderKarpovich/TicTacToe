@@ -25,6 +25,8 @@ builder.Services.AddIdentity<GameUser, IdentityRole>().AddEntityFrameworkStores<
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddHostedService<GamesDataHostedService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
