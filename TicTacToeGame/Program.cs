@@ -9,6 +9,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<GamesDbContext>(options =>
+{
+    options.UseSqlite("Data Source=Database/TicTacToe.db");
+});
+
+builder.Services.AddScoped<IGameSessionsRepository, GameSessionRepository>();
+
 builder.Services.AddDbContext<AppIdentityDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")!);
