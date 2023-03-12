@@ -1,20 +1,16 @@
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
-
 namespace TicTacToe.UnitTests
 {
     public class UsersControllerTests
     {
-        private GameUser? authorizedUser;
         private readonly Dictionary<GameUser, string> users;
         private readonly Mock<UserManager<GameUser>> userManager;
         private readonly Mock<SignInManager<GameUser>> signInManager;
 
         public UsersControllerTests()
         {
-            authorizedUser = null;
             users = new Dictionary<GameUser, string>();
-            userManager = SetupUserManager();
-            signInManager = SetupSignInManager();
+            userManager = UserManagerMockFactory.Create(users);
+            signInManager = SignInManagerMockFactory.Create(userManager, users);
         }
 
         [Fact]
@@ -68,7 +64,6 @@ namespace TicTacToe.UnitTests
                 sim.PasswordSignInAsync(It.IsAny<GameUser>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), 
                 Times.Once);
             Assert.IsType<OkResult>(result);
-            Assert.NotNull(authorizedUser);
         }
 
         [Fact]
@@ -84,7 +79,6 @@ namespace TicTacToe.UnitTests
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
             Assert.IsType<UnauthorizedResult>(result);
-            Assert.Null(authorizedUser);
         }
 
         [Fact]
@@ -106,7 +100,6 @@ namespace TicTacToe.UnitTests
                 sim.PasswordSignInAsync(It.IsAny<GameUser>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()), 
                 Times.Once);
             Assert.IsType<UnauthorizedResult>(result);
-            Assert.Null(authorizedUser);
         }
 
         [Fact]
@@ -120,8 +113,6 @@ namespace TicTacToe.UnitTests
             await controller.SignUp(credentials);
             await controller.Login(credentials);
 
-            Assert.NotNull(authorizedUser);
-
             var result = await controller.Logout();
 
             // Assert
@@ -131,45 +122,6 @@ namespace TicTacToe.UnitTests
                 Times.Once);
             signInManager.Verify(sim => sim.SignOutAsync(), Times.Exactly(2));
             Assert.IsType<OkResult>(result);
-            Assert.Null(authorizedUser);
-        }
-
-        private Mock<UserManager<GameUser>> SetupUserManager()
-        {
-            var userStore = new Mock<IUserStore<GameUser>>();
-            var manager = new Mock<UserManager<GameUser>>(userStore.Object, null, null, null, null, null, null, null, null);
-
-            manager.Object.UserValidators.Add(new UserValidator<GameUser>());
-            manager.Object.PasswordValidators.Add(new PasswordValidator<GameUser>());
-
-            manager.Setup(m => m.FindByNameAsync(It.IsAny<string>()))
-                .ReturnsAsync((string userName) =>
-                    users.SingleOrDefault(u => u.Key.UserName == userName).Key);
-
-            manager.Setup(m => m.CreateAsync(It.IsAny<GameUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success)
-                .Callback<GameUser, string>((x, y) => users[x] = y);
-
-            return manager;
-        }
-
-        private Mock<SignInManager<GameUser>> SetupSignInManager()
-        {
-            var manager = new Mock<SignInManager<GameUser>>(
-                userManager.Object,
-                Mock.Of<IHttpContextAccessor>(),
-                Mock.Of<IUserClaimsPrincipalFactory<GameUser>>(),
-                null, null, null, null);
-
-            manager.Setup(sim => sim.SignOutAsync()).Returns(() => Task.CompletedTask).Callback(() => authorizedUser = null);
-            manager.Setup(sim => sim.PasswordSignInAsync(It.IsAny<GameUser>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()))
-                .ReturnsAsync((GameUser gameUser, string password, bool isPersistante, bool lockoutOnFailure) =>
-                {
-                    authorizedUser = users[gameUser] == password ? gameUser : null;
-                    return authorizedUser is not null ? SignInResult.Success : SignInResult.Failed;
-                });
-
-            return manager;
         }
     }
 }
