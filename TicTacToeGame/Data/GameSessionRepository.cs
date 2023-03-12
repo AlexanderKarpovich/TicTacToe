@@ -25,7 +25,7 @@ namespace TicTacToeGame.Data
 
         public IEnumerable<GameSession> GetOldGameSessions(TimeSpan lifeInterval)
         {
-            return context.GameSessions.ToList().Where(gs => gs.CreationTime > (DateTime.Now - lifeInterval));
+            return context.GameSessions.ToList().Where(gs => gs.CreationTime < (DateTime.Now - lifeInterval));
         }
 
         public GameSession? GetGameSessionById(int id)
