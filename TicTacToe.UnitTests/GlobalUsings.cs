@@ -11,3 +11,5 @@ global using System.Collections.Generic;
 
 global using TicTacToeGame.Models;
 global using TicTacToeGame.Controllers;
+
+global using TicTacToe.UnitTests.MoqServices;
