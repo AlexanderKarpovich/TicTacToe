@@ -138,6 +138,14 @@ namespace TicTacToeGame.Controllers
                 return BadRequest(ex.Message);
             }
 
+            if (game.IsEmpty)
+            {
+                repository.RemoveGameSession(game.GameSessionId);
+                repository.SaveChanges();
+
+                return Ok();
+            }
+            
             repository.UpdateGameSession(game);
             repository.SaveChanges();
 
