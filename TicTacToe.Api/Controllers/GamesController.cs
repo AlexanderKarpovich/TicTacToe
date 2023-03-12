@@ -26,11 +26,11 @@ namespace TicTacToe.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<GameSessionReadDto>), StatusCodes.Status200OK, "application/json")]
-        public ActionResult<IEnumerable<GameSessionReadDto>> GetAllGameSessions()
+        public IEnumerable<GameSessionReadDto> GetAllGameSessions()
         {
             var gameSessions = mapper.Map<IEnumerable<GameSessionReadDto>>(repository.GetGameSessions());
 
-            return Ok(gameSessions);
+            return gameSessions;
         }
 
         [HttpGet("{id}")]
@@ -47,7 +47,7 @@ namespace TicTacToe.Api.Controllers
 
             var gameReadDto = mapper.Map<GameSessionReadDto>(gameSession);
 
-            return Ok(gameReadDto);
+            return gameReadDto;
         }
 
         [Authorize]
@@ -208,7 +208,7 @@ namespace TicTacToe.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(game.Winner);
+            return game.Winner;
         }
     }
 }
