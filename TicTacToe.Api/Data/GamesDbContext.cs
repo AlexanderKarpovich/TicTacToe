@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicTacToeGame.Data.EntityConfigurations;
-using TicTacToeGame.Models;
+using TicTacToe.Api.Data.EntityConfigurations;
+using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Data
+namespace TicTacToe.Api.Data
 {
     public class GamesDbContext : DbContext
     {

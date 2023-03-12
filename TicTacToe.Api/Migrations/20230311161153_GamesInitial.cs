@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace TicTacToeGame.Migrations
+namespace TicTacToe.Api.Migrations
 {
     public partial class GamesInitial : Migration
     {

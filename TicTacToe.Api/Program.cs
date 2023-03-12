@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using TicTacToeGame.Data;
-using TicTacToeGame.Models;
-using TicTacToeGame.Services;
+using TicTacToe.Api.Data;
+using TicTacToe.Api.Models;
+using TicTacToe.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

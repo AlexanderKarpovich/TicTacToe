@@ -1,4 +1,4 @@
-﻿namespace TicTacToeGame.Models
+﻿namespace TicTacToe.Api.Models
 {
     public class Player
     {

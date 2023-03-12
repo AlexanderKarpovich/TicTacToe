@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using TicTacToeGame.Models;
+using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Controllers
+namespace TicTacToe.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

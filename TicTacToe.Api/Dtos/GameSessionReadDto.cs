@@ -1,6 +1,6 @@
-﻿using TicTacToeGame.Models;
+﻿using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Dtos
+namespace TicTacToe.Api.Dtos
 {
     public class GameSessionReadDto
     {

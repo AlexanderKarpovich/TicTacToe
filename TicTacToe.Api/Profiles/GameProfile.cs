@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using TicTacToeGame.Dtos;
-using TicTacToeGame.Models;
+using TicTacToe.Api.Dtos;
+using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Profiles
+namespace TicTacToe.Api.Profiles
 {
     public class GameProfile : Profile
     {

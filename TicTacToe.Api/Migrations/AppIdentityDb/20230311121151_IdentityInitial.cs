@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TicTacToeGame.Migrations.AppIdentityDb
+namespace TicTacToe.Api.Migrations.AppIdentityDb
 {
     public partial class IdentityInitial : Migration
     {

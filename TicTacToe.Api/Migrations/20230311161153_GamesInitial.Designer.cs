@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TicTacToeGame.Data;
+using TicTacToe.Api.Data;
 
 #nullable disable
 
-namespace TicTacToeGame.Migrations
+namespace TicTacToe.Api.Migrations
 {
     [DbContext(typeof(GamesDbContext))]
     [Migration("20230311161153_GamesInitial")]

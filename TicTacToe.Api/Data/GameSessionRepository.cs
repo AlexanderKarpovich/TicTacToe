@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TicTacToeGame.Models;
+using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Data
+namespace TicTacToe.Api.Data
 {
     public class GameSessionRepository : IGameSessionsRepository
     {

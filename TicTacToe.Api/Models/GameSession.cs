@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace TicTacToeGame.Models
+﻿namespace TicTacToe.Api.Models
 {
     public class GameSession
     {

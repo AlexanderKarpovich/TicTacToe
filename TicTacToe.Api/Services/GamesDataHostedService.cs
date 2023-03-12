@@ -1,7 +1,7 @@
-using TicTacToeGame.Data;
-using TicTacToeGame.Models;
+using TicTacToe.Api.Data;
+using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Services
+namespace TicTacToe.Api.Services
 {
     public class GamesDataHostedService : IHostedService, IDisposable
     {

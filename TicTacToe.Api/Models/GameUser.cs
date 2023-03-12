@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace TicTacToeGame.Models
+namespace TicTacToe.Api.Models
 {
     public class GameUser : IdentityUser
     {

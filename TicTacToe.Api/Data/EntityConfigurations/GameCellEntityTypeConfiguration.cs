@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TicTacToeGame.Models;
+using TicTacToe.Api.Models;
 
-namespace TicTacToeGame.Data.EntityConfigurations
+namespace TicTacToe.Api.Data.EntityConfigurations
 {
     public class GameCellEntityTypeConfiguration : IEntityTypeConfiguration<GameCell>
     {
