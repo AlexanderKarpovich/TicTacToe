@@ -57,11 +57,14 @@ namespace TicTacToeGame.Models
                     Player1 = null;
                     IsEmpty = true;
                 }
+                ResetGame();
+                return;
             }
 
             if (Player2?.Name == player.Name)
             {
                 Player2 = null;
+                ResetGame();
                 return;
             }
 
@@ -86,13 +89,6 @@ namespace TicTacToeGame.Models
             return isSucceeded;
         }
 
-        private void CheckWin()
-        {
-            CheckRows();
-            CheckColumns();
-            CheckDiagonals();
-        }
-
         public static List<GameCell> GenerateGameField()
         {
             var list = new List<GameCell>();
@@ -103,15 +99,26 @@ namespace TicTacToeGame.Models
             return list;
         }
 
+        private void CheckWin()
+        {
+            CheckRows();
+            CheckColumns();
+            CheckDiagonals();
+        }
+
         private void CheckDiagonals()
         {
             // Primary diagonal
-            if (Cells![0].Variant == Cells[4].Variant && Cells[4].Variant == Cells[8].Variant)
+            if (Cells![0].Variant == Cells[4].Variant && 
+                Cells[4].Variant == Cells[8].Variant && 
+                Cells[0].Variant != GameVariant.Clear)
             {
                 Winner = Player1?.Variant == Cells[0].Variant ? Player1 : Player2;
             }
             // Secondary diagonal
-            else if (Cells[2].Variant == Cells[4].Variant && Cells[4].Variant == Cells[6].Variant)
+            else if (Cells[2].Variant == Cells[4].Variant && 
+                Cells[4].Variant == Cells[6].Variant && 
+                Cells[2].Variant != GameVariant.Clear)
             {
                 Winner = Player1?.Variant == Cells[2].Variant ? Player1 : Player2;
             }
@@ -122,7 +129,9 @@ namespace TicTacToeGame.Models
             // Column check
             for (int i = 0; i < 3; i++)
             {
-                if (Cells![i].Variant == Cells[i + 3].Variant && Cells[i + 3].Variant == Cells[i + 6].Variant)
+                if (Cells![i].Variant == Cells[i + 3].Variant && 
+                    Cells[i + 3].Variant == Cells[i + 6].Variant && 
+                    Cells[i].Variant != GameVariant.Clear)
                 {
                     Winner = Player1?.Variant == Cells[i].Variant ? Player1 : Player2;
                 }
@@ -134,11 +143,24 @@ namespace TicTacToeGame.Models
             // Row check
             for (int i = 0; i < 8; i += 3)
             {
-                if (Cells![i].Variant == Cells[i + 1].Variant && Cells[i + 1].Variant == Cells[i + 2].Variant)
+                if (Cells![i].Variant == Cells[i + 1].Variant && 
+                    Cells[i + 1].Variant == Cells[i + 2].Variant &&
+                    Cells[i].Variant != GameVariant.Clear)
                 {
                     Winner = Player1?.Variant == Cells[i].Variant ? Player1 : Player2;
                 }
             }
+        }
+
+        private void ResetGame()
+        {
+            foreach (GameCell cell in Cells!)
+            {
+                cell.ClearCell();
+            }
+
+            PlayerTurn = null;
+            Winner = null;
         }
 
         private void StartGame()
