@@ -166,7 +166,7 @@ namespace TicTacToe.Api.Controllers
             GameSession? game = repository.GetGameSessionById(gameSessionId);
             Player? player = repository.GetPlayerByName(user.UserName);
 
-            if (game is null || game.Cells!.Any(c => c.Position == position))
+            if (game is null || !game.Cells!.Any(c => c.Position == position))
             {
                 return NotFound();
             }
