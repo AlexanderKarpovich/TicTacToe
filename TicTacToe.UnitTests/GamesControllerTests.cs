@@ -91,11 +91,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.AddGameSession(It.IsAny<GameSession>()), Times.Once);
-            repository.Verify(r => r.SaveChanges(), Times.Once);
+            VerifyRepositoryMock(getPlayerByNameTimes: 1, isPlayerAlreadyInGameTimes: 1, 
+                addGameSessionTimes: 1, saveChangesTimes: 1);
 
             var objectResult = Assert.IsType<CreatedAtActionResult>(response);
             Assert.Equal(expectedGameId, objectResult.RouteValues!["Id"]);
@@ -116,11 +113,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(2));
-
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.AddGameSession(It.IsAny<GameSession>()), Times.Once);
-            repository.Verify(r => r.SaveChanges(), Times.Once);
+            VerifyRepositoryMock(getPlayerByNameTimes: 2, isPlayerAlreadyInGameTimes: 2, 
+                addGameSessionTimes: 1, saveChangesTimes: 1);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
             Assert.Equal(expectedMessage, objectResult.Value);
@@ -141,12 +135,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Once);
-            repository.Verify(r => r.SaveChanges(), Times.Once);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1,
+                isPlayerAlreadyInGameTimes: 1, updateGameSessionTimes: 1, saveChangesTimes: 1);
 
             var objectResult = Assert.IsType<AcceptedAtActionResult>(response);
             var game = objectResult.Value as GameSessionReadDto;
@@ -172,15 +162,10 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(2));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(2));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Once);
-            repository.Verify(r => r.SaveChanges(), Times.Once);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 2, getPlayerByNameTimes: 2,
+                isPlayerAlreadyInGameTimes: 2, updateGameSessionTimes: 1, saveChangesTimes: 1);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
-
             Assert.Equal(message, objectResult.Value);
         }
 
@@ -206,15 +191,10 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(3));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(2));
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(2));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3,
+                isPlayerAlreadyInGameTimes: 3, updateGameSessionTimes: 2, saveChangesTimes: 2);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
-
             Assert.Equal(message, objectResult.Value);
         }
 
@@ -233,12 +213,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Never);
-            repository.Verify(r => r.SaveChanges(), Times.Never);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1);
 
             var objectResult = Assert.IsType<NotFoundResult>(response);
         }
@@ -259,13 +234,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(2));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(2));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.RemoveGameSession(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Once);
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(2));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 2, getPlayerByNameTimes: 2, isPlayerAlreadyInGameTimes: 2, 
+                removeGameSessionTimes: 1, updateGameSessionTimes: 1, saveChangesTimes: 2);
 
             var objectResult = Assert.IsType<OkResult>(response);
         }
@@ -291,13 +261,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(3));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.RemoveGameSession(It.IsAny<int>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(3));
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(3));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3,
+                isPlayerAlreadyInGameTimes: 3, updateGameSessionTimes: 3, saveChangesTimes: 3);
 
             var objectResult = Assert.IsType<AcceptedAtActionResult>(response);
             var game = objectResult.Value as GameSessionReadDto;
@@ -322,13 +287,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Never);
-            repository.Verify(r => r.RemoveGameSession(It.IsAny<int>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Never);
-            repository.Verify(r => r.SaveChanges(), Times.Never);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
 
@@ -352,13 +311,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(2));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(2));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.RemoveGameSession(It.IsAny<int>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Once);
-            repository.Verify(r => r.SaveChanges(), Times.Once);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 2, getPlayerByNameTimes: 2,
+                isPlayerAlreadyInGameTimes: 2, updateGameSessionTimes: 1, saveChangesTimes: 1);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
 
@@ -380,13 +334,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
-            repository.Verify(r => r.RemoveGameSession(It.IsAny<int>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Never);
-            repository.Verify(r => r.SaveChanges(), Times.Never);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1);
 
             var objectResult = Assert.IsType<NotFoundResult>(response);
         }
@@ -417,13 +365,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(3));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(3));
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(3));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3, isPlayerAlreadyInGameTimes: 2, 
+                isPlayerInGameSessionTimes: 1, updateGameSessionTimes: 3, saveChangesTimes: 3);
 
             acceptedResult = Assert.IsType<AcceptedAtActionResult>(response);
             game = acceptedResult.Value as GameSessionReadDto;
@@ -462,13 +405,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(4));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(4));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(4));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(3));
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(3));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 4, getPlayerByNameTimes: 4, isPlayerAlreadyInGameTimes: 2,
+                isPlayerInGameSessionTimes: 2, updateGameSessionTimes: 3, saveChangesTimes: 3);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
             Assert.Equal(message, objectResult.Value);
@@ -497,13 +435,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(3));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(2));
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(2));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3,
+                isPlayerAlreadyInGameTimes: 2, updateGameSessionTimes: 2, saveChangesTimes: 2);
 
             Assert.IsType<UnauthorizedResult>(response);
         }
@@ -534,12 +467,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(3));
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(3));
-            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(2));
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(2));
-            repository.Verify(r => r.SaveChanges(), Times.Exactly(2));
+            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3, 
+                isPlayerAlreadyInGameTimes: 2, updateGameSessionTimes: 2, saveChangesTimes: 2);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
 
@@ -561,12 +490,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Never);
-            repository.Verify(r => r.SaveChanges(), Times.Never);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1);
 
             var objectResult = Assert.IsType<NotFoundResult>(response);
         }
@@ -586,12 +510,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
-
-            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
-            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Once);
-            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
-            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Never);
-            repository.Verify(r => r.SaveChanges(), Times.Never);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1);
 
             var objectResult = Assert.IsType<NotFoundResult>(response);
         }
@@ -663,6 +582,29 @@ namespace TicTacToe.UnitTests
             {
                 HttpContext = httpContext.Object
             };
+        }
+
+        private void VerifyRepositoryMock( 
+            int getGameSessionsTimes = 0,
+            int getGameSessionByIdTimes = 0,
+            int getPlayerByNameTimes = 0,
+            int isPlayerAlreadyInGameTimes = 0,
+            int isPlayerInGameSessionTimes = 0,
+            int addGameSessionTimes = 0,
+            int updateGameSessionTimes = 0,
+            int removeGameSessionTimes = 0,
+            int saveChangesTimes = 0
+            )
+        {
+            repository.Verify(r => r.GetGameSessions(), Times.Exactly(getGameSessionsTimes));
+            repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Exactly(getGameSessionByIdTimes));
+            repository.Verify(r => r.GetPlayerByName(It.IsAny<string>()), Times.Exactly(getPlayerByNameTimes));
+            repository.Verify(r => r.IsPlayerAlreadyInGame(It.IsAny<string>()), Times.Exactly(isPlayerAlreadyInGameTimes));
+            repository.Verify(r => r.IsPlayerInGameSession(It.IsAny<int>(), It.IsAny<string>()), Times.Exactly(isPlayerInGameSessionTimes));
+            repository.Verify(r => r.AddGameSession(It.IsAny<GameSession>()), Times.Exactly(addGameSessionTimes));
+            repository.Verify(r => r.UpdateGameSession(It.IsAny<GameSession>()), Times.Exactly(updateGameSessionTimes));
+            repository.Verify(r => r.RemoveGameSession(It.IsAny<int>()), Times.Exactly(removeGameSessionTimes));
+            repository.Verify(r => r.SaveChanges(), Times.Exactly(saveChangesTimes));
         }
     }
 }
