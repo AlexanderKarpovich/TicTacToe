@@ -3,12 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using TicTacToe.Api.Data;
 using TicTacToe.Api.Models;
 using TicTacToe.Api.Services;
+using TicTacToe.Api.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<GamesDbContext>(options =>
 {
@@ -41,6 +43,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<GamesHub>("/hub/games");
 
 await SeedIdentityData.EnsurePopulated(app);
 
