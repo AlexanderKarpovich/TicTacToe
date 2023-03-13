@@ -1,5 +1,3 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
@@ -7,16 +5,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["TicTacToeGame/TicTacToeGame.csproj", "TicTacToeGame/"]
-RUN dotnet restore "TicTacToeGame/TicTacToeGame.csproj"
+COPY ["TicTacToe.Api/TicTacToe.Api.csproj", "TicTacToe.Api/"]
+RUN dotnet restore "TicTacToe.Api/TicTacToe.Api.csproj"
 COPY . .
-WORKDIR "/src/TicTacToeGame"
-RUN dotnet build "TicTacToeGame.csproj" -c Release -o /app/build
+WORKDIR "/src/TicTacToe.Api"
+RUN dotnet build "TicTacToe.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "TicTacToeGame.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "TicTacToe.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TicTacToeGame.dll"]
+ENTRYPOINT ["dotnet", "TicTacToe.Api.dll"]
