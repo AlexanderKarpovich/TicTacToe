@@ -6,6 +6,7 @@ namespace TicTacToe.UnitTests
         private readonly Dictionary<GameUser, string> users;
         private readonly Mock<UserManager<GameUser>> userManager;
         private readonly Mock<IGameSessionsRepository> repository;
+        private readonly Mock<IHubContext<GamesHub>> hubContext;
 
         private readonly IMapper mapper;
 
@@ -21,13 +22,14 @@ namespace TicTacToe.UnitTests
 
             games = CreateGames();
             repository = IGameSessionRepositoryMockFactory.Create(games);
+            
+            hubContext = SetupHubContext();
 
             mapper = new MapperConfiguration(configuration =>
             {
                 configuration.AddProfile(new GameProfile());
             }).CreateMapper();
         }
-
         [Fact]
         public void GetAllGameSessions_CountShouldReturnFive()
         {
@@ -91,6 +93,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
+            VerifyHubContext(1);
             VerifyRepositoryMock(getPlayerByNameTimes: 1, isPlayerAlreadyInGameTimes: 1, 
                 addGameSessionTimes: 1, saveChangesTimes: 1);
 
@@ -135,6 +138,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Once);
+            VerifyHubContext(1);
             VerifyRepositoryMock(getGameSessionByIdTimes: 1, getPlayerByNameTimes: 1,
                 isPlayerAlreadyInGameTimes: 1, updateGameSessionTimes: 1, saveChangesTimes: 1);
 
@@ -261,6 +265,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
+            VerifyHubContext(3);
             VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3,
                 isPlayerAlreadyInGameTimes: 3, updateGameSessionTimes: 3, saveChangesTimes: 3);
 
@@ -365,6 +370,7 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
+            VerifyHubContext(3);
             VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3, isPlayerAlreadyInGameTimes: 2, 
                 isPlayerInGameSessionTimes: 1, updateGameSessionTimes: 3, saveChangesTimes: 3);
 
@@ -467,8 +473,8 @@ namespace TicTacToe.UnitTests
 
             // Assert
             userManager.Verify(um => um.FindByNameAsync(It.IsAny<string>()), Times.Exactly(3));
-            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3, 
-                isPlayerAlreadyInGameTimes: 2, updateGameSessionTimes: 2, saveChangesTimes: 2);
+            VerifyRepositoryMock(getGameSessionByIdTimes: 3, getPlayerByNameTimes: 3, isPlayerAlreadyInGameTimes: 2, 
+                isPlayerInGameSessionTimes: 1, updateGameSessionTimes: 2, saveChangesTimes: 2);
 
             var objectResult = Assert.IsType<BadRequestObjectResult>(response);
 
@@ -565,9 +571,21 @@ namespace TicTacToe.UnitTests
             };
         }
 
+        private Mock<IHubContext<GamesHub>> SetupHubContext()
+        {
+            var clientProxy = new Mock<IClientProxy>();
+            var clients = new Mock<IHubClients>();
+            var hubContext = new Mock<IHubContext<GamesHub>>();
+
+            hubContext.Setup(hc => hc.Clients).Returns(clients.Object);
+            hubContext.Setup(hc => hc.Clients.Group(It.IsAny<string>())).Returns(clientProxy.Object);
+
+            return hubContext;
+        }
+
         private GamesController SetupController()
         {
-            return new GamesController(repository.Object, mapper, userManager.Object);
+            return new GamesController(repository.Object, mapper, userManager.Object, hubContext.Object);
         }
 
         private ControllerContext SetupControllerContext(string? playerName)
@@ -582,6 +600,13 @@ namespace TicTacToe.UnitTests
             {
                 HttpContext = httpContext.Object
             };
+        }
+
+        private void VerifyHubContext(int times)
+        {
+            hubContext.Verify(hc => 
+                hc.Clients.Group(It.IsAny<string>()), 
+                Times.Exactly(times));
         }
 
         private void VerifyRepositoryMock( 
