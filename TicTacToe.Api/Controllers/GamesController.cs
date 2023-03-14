@@ -41,9 +41,9 @@ namespace TicTacToe.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(GameSessionReadDto), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound, "text/plain")]
-        public ActionResult<GameSessionReadDto> GetGameSession(int id)
+        public ActionResult<GameSessionReadDto> GetGameSessionById(int gameSessionId)
         {
-            var gameSession = repository.GetGameSessionById(id);
+            var gameSession = repository.GetGameSessionById(gameSessionId);
 
             if (gameSession is null)
             {
@@ -78,7 +78,7 @@ namespace TicTacToe.Api.Controllers
             var gameReadDto = mapper.Map<GameSessionReadDto>(game);
 
             await hubContext.Clients.Group(user.UserName).SendAsync("GameUpdated", gameReadDto);
-            return CreatedAtAction(nameof(GetGameSession), new { Id = gameReadDto.GameSessionId }, gameReadDto);
+            return CreatedAtAction(nameof(GetGameSessionById), new { Id = gameReadDto.GameSessionId }, gameReadDto);
         }
 
         [Authorize]
@@ -113,7 +113,7 @@ namespace TicTacToe.Api.Controllers
             var gameReadDto = mapper.Map<GameSessionReadDto>(game);
 
             await hubContext.Clients?.Group(user.UserName)?.SendAsync("GameUpdated", gameReadDto)!;
-            return AcceptedAtAction(nameof(GetGameSession), new { Id = gameReadDto.GameSessionId }, gameReadDto);
+            return AcceptedAtAction(nameof(GetGameSessionById), new { Id = gameReadDto.GameSessionId }, gameReadDto);
         }
 
         [Authorize]
@@ -160,7 +160,7 @@ namespace TicTacToe.Api.Controllers
             var gameReadDto = mapper.Map<GameSessionReadDto>(game);
 
             await hubContext.Clients.Group(user.UserName).SendAsync("GameUpdated", gameReadDto);
-            return AcceptedAtAction(nameof(GetGameSession), new { Id = gameReadDto.GameSessionId }, gameReadDto);
+            return AcceptedAtAction(nameof(GetGameSessionById), new { Id = gameReadDto.GameSessionId }, gameReadDto);
         }
 
         [Authorize]
@@ -203,7 +203,7 @@ namespace TicTacToe.Api.Controllers
             var gameReadDto = mapper.Map<GameSessionReadDto>(game);
 
             await hubContext.Clients.Group(user.UserName).SendAsync("GameUpdated", gameReadDto);
-            return AcceptedAtAction(nameof(GetGameSession), new { Id = gameReadDto.GameSessionId }, gameReadDto);
+            return AcceptedAtAction(nameof(GetGameSessionById), new { Id = gameReadDto.GameSessionId }, gameReadDto);
         }
 
         [Authorize]
