@@ -55,7 +55,7 @@ namespace TicTacToe.UnitTests
             const int gameId = 1;
 
             // Act
-            var response = controller.GetGameSession(gameId);
+            var response = controller.GetGameSessionById(gameId);
 
             // Assert
             repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
@@ -72,7 +72,7 @@ namespace TicTacToe.UnitTests
             const int gameId = 6;
 
             // Act
-            var response = controller.GetGameSession(gameId);
+            var response = controller.GetGameSessionById(gameId);
 
             // Assert
             repository.Verify(r => r.GetGameSessionById(It.IsAny<int>()), Times.Once);
