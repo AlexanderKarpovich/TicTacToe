@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  tictactoeapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=pa55w0rd!
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/root/.aspnet/https/TicTacToe.Api.pfx
+    ports:
+      - "5000:80"
+      - "5001:443"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+    depends_on:
+      - sqlserver
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      MSSQL_SA_PASSWORD: "pa55w0rd!"
+      ACCEPT_EULA: "Y"
+    volumes:
+      - ${APPDATA}/volumes/tictactoe/mssql/data:/var/opt/mssql/data:rw
+      - ${APPDATA}/volumes/tictactoe/mssql/log:/var/opt/mssql/log:rw
+      - ${APPDATA}/volumes/tictactoe/mssql/secrets:/var/opt/mssql/secrets:rw
+
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  tictactoeapi:
+    image: alexanderkarpovich/tictactoe-api
+    build:
+      context: TicTacToe.Api
+      dockerfile: Dockerfile
