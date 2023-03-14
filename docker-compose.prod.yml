@@ -17,13 +17,21 @@ services:
       - sqlserver
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    user: root
     environment:
       MSSQL_SA_PASSWORD: "pa55w0rd!"
       ACCEPT_EULA: "Y"
     volumes:
-      - ${APPDATA}/volumes/tictactoe/mssql/data:/var/opt/mssql/data:rw
-      - ${APPDATA}/volumes/tictactoe/mssql/log:/var/opt/mssql/log:rw
-      - ${APPDATA}/volumes/tictactoe/mssql/secrets:/var/opt/mssql/secrets:rw
+      - mssql_data:/var/opt/mssql/data:rw
+      - mssql_logs:/var/opt/mssql/log:rw
+      - mssql_secrets:/var/opt/mssql/secrets:rw
+
+volumes:
+  mssql_data:
+  mssql_logs:
+  mssql_backup:
+  mssql_secrets:
+  
 
 networks:
   default:
