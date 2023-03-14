@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+option csharp_namespace = "TicTacToe.Api";
+
+package TicTacToeApi;
+
+service GamesService {
+    rpc GetAllGames(EmptyRequest) returns (GamesResponse);
+    rpc GetGameById(GameRequest) returns (GameResponse);
+    rpc CreateGame(EmptyRequest) returns (GameResponse);
+    rpc JoinGame(GameRequest) returns (GameResponse);
+    rpc LeaveGame(GameRequest) returns (EmptyResponse);
+    rpc MakeMove(MakeMoveRequest) returns (GameResponse);
+    rpc GetWinner(GameRequest) returns (PlayerResponse);
+}
+
+message EmptyRequest {}
+message EmptyResponse {}
+
+message GameRequest {
+    int32 gameSessionId = 1;
+}
+
+message MakeMoveRequest {
+    int32 gameSessionId = 1;
+    int32 position = 2;
+}
+
+message GamesResponse {
+    repeated GameResponse games = 1;
+}
+
+message GameResponse {
+    int32 gameSessionId = 1;
+    PlayerResponse player1 = 2;
+    PlayerResponse player2 = 3;
+    PlayerResponse playerTurn = 4;
+    PlayerResponse winner = 5;
+    repeated GameCellResponse cells = 6;
+}
+
+message PlayerResponse {
+    int32 playerId = 1;
+    string name = 2;
+    GameVariantResponse gameVariant = 3;
+}
+
+message GameCellResponse {
+    int32 position = 1;
+    GameVariantResponse variant = 2;
+}
+
+enum GameVariantResponse {
+    X = 0;
+    O = 1;
+    Clear = 2;
+}
