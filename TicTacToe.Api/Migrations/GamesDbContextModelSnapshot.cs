@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicTacToe.Api.Data;
 
@@ -15,44 +16,50 @@ namespace TicTacToe.Api.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.14");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "6.0.14")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            modelBuilder.Entity("TicTacToeGame.Models.GameCell", b =>
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("TicTacToe.Api.Models.GameCell", b =>
                 {
                     b.Property<int>("GameSessionId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("Position")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("Variant")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("GameSessionId", "Position");
 
                     b.ToTable("GameCells", (string)null);
                 });
 
-            modelBuilder.Entity("TicTacToeGame.Models.GameSession", b =>
+            modelBuilder.Entity("TicTacToe.Api.Models.GameSession", b =>
                 {
                     b.Property<int>("GameSessionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameSessionId"), 1L, 1);
 
                     b.Property<bool>("IsEmpty")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bit");
 
                     b.Property<int?>("Player1PlayerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int?>("Player2PlayerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int?>("PlayerTurnPlayerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int?>("WinnerPlayerId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("GameSessionId");
 
@@ -67,18 +74,20 @@ namespace TicTacToe.Api.Migrations
                     b.ToTable("Games", (string)null);
                 });
 
-            modelBuilder.Entity("TicTacToeGame.Models.Player", b =>
+            modelBuilder.Entity("TicTacToe.Api.Models.Player", b =>
                 {
                     b.Property<int>("PlayerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerId"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Variant")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("PlayerId");
 
@@ -88,30 +97,30 @@ namespace TicTacToe.Api.Migrations
                     b.ToTable("Players", (string)null);
                 });
 
-            modelBuilder.Entity("TicTacToeGame.Models.GameCell", b =>
+            modelBuilder.Entity("TicTacToe.Api.Models.GameCell", b =>
                 {
-                    b.HasOne("TicTacToeGame.Models.GameSession", null)
+                    b.HasOne("TicTacToe.Api.Models.GameSession", null)
                         .WithMany("Cells")
                         .HasForeignKey("GameSessionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TicTacToeGame.Models.GameSession", b =>
+            modelBuilder.Entity("TicTacToe.Api.Models.GameSession", b =>
                 {
-                    b.HasOne("TicTacToeGame.Models.Player", "Player1")
+                    b.HasOne("TicTacToe.Api.Models.Player", "Player1")
                         .WithMany()
                         .HasForeignKey("Player1PlayerId");
 
-                    b.HasOne("TicTacToeGame.Models.Player", "Player2")
+                    b.HasOne("TicTacToe.Api.Models.Player", "Player2")
                         .WithMany()
                         .HasForeignKey("Player2PlayerId");
 
-                    b.HasOne("TicTacToeGame.Models.Player", "PlayerTurn")
+                    b.HasOne("TicTacToe.Api.Models.Player", "PlayerTurn")
                         .WithMany()
                         .HasForeignKey("PlayerTurnPlayerId");
 
-                    b.HasOne("TicTacToeGame.Models.Player", "Winner")
+                    b.HasOne("TicTacToe.Api.Models.Player", "Winner")
                         .WithMany()
                         .HasForeignKey("WinnerPlayerId");
 
@@ -124,7 +133,7 @@ namespace TicTacToe.Api.Migrations
                     b.Navigation("Winner");
                 });
 
-            modelBuilder.Entity("TicTacToeGame.Models.GameSession", b =>
+            modelBuilder.Entity("TicTacToe.Api.Models.GameSession", b =>
                 {
                     b.Navigation("Cells");
                 });

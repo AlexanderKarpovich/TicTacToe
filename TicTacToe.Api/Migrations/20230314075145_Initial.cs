@@ -4,7 +4,7 @@
 
 namespace TicTacToe.Api.Migrations
 {
-    public partial class GamesInitial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,10 +12,10 @@ namespace TicTacToe.Api.Migrations
                 name: "Players",
                 columns: table => new
                 {
-                    PlayerId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Variant = table.Column<int>(type: "INTEGER", nullable: false)
+                    PlayerId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Variant = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,13 +26,13 @@ namespace TicTacToe.Api.Migrations
                 name: "Games",
                 columns: table => new
                 {
-                    GameSessionId = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Player1PlayerId = table.Column<int>(type: "INTEGER", nullable: true),
-                    Player2PlayerId = table.Column<int>(type: "INTEGER", nullable: true),
-                    PlayerTurnPlayerId = table.Column<int>(type: "INTEGER", nullable: true),
-                    WinnerPlayerId = table.Column<int>(type: "INTEGER", nullable: true),
-                    IsEmpty = table.Column<bool>(type: "INTEGER", nullable: false)
+                    GameSessionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Player1PlayerId = table.Column<int>(type: "int", nullable: true),
+                    Player2PlayerId = table.Column<int>(type: "int", nullable: true),
+                    PlayerTurnPlayerId = table.Column<int>(type: "int", nullable: true),
+                    WinnerPlayerId = table.Column<int>(type: "int", nullable: true),
+                    IsEmpty = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,9 +63,9 @@ namespace TicTacToe.Api.Migrations
                 name: "GameCells",
                 columns: table => new
                 {
-                    Position = table.Column<int>(type: "INTEGER", nullable: false),
-                    GameSessionId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Variant = table.Column<int>(type: "INTEGER", nullable: false)
+                    Position = table.Column<int>(type: "int", nullable: false),
+                    GameSessionId = table.Column<int>(type: "int", nullable: false),
+                    Variant = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
