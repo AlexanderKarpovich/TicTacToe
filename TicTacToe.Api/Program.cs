@@ -11,22 +11,42 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-
-builder.Services.AddDbContext<GamesDbContext>(options =>
-{
-    options.UseSqlite("Data Source=Database/TicTacToe.db");
-});
-
-builder.Services.AddScoped<IGameSessionsRepository, GameSessionRepository>();
-
-builder.Services.AddDbContext<AppIdentityDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")!);
-});
-builder.Services.AddIdentity<GameUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+if (builder.Environment.IsProduction())
+{
+    builder.Services.AddDbContext<GamesDbContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("GamesConnection")!, sqlServerOptions =>
+        {
+            sqlServerOptions.EnableRetryOnFailure();
+        });
+    });
+
+    builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")!, sqlServerOptions =>
+        {
+            sqlServerOptions.EnableRetryOnFailure();
+        });
+    });
+}
+else
+{
+    builder.Services.AddDbContext<GamesDbContext>(options =>
+    {
+        options.UseInMemoryDatabase("GamesDb");
+    });
+    
+    builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+    {
+        options.UseInMemoryDatabase("IdentityDb");
+    });
+}
+
+builder.Services.AddIdentity<GameUser, IdentityRole>().AddEntityFrameworkStores<AppIdentityDbContext>();
+
+builder.Services.AddScoped<IGameSessionsRepository, GameSessionRepository>();
 builder.Services.AddHostedService<GamesDataHostedService>();
 
 var app = builder.Build();
@@ -45,6 +65,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<GamesHub>("/hub/games");
 
-await SeedIdentityData.EnsurePopulated(app);
+PrepareGamesDatabase.PrepareDatabase(app, app.Environment);
+await PrepareIdentityDatabase.EnsurePopulated(app, app.Environment);
 
 app.Run();
