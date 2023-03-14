@@ -4,17 +4,17 @@ using TicTacToe.Api.Models;
 
 namespace TicTacToe.Api.Data
 {
-    public class SeedIdentityData
+    public class PrepareIdentityDatabase
     {
         private const string adminUser = "Admin";
         private const string adminPassword = "Secret123$";
 
-        public static async Task EnsurePopulated(IApplicationBuilder app)
+        public static async Task EnsurePopulated(IApplicationBuilder app, IWebHostEnvironment environment)
         {
             AppIdentityDbContext context = app.ApplicationServices.CreateScope()
                 .ServiceProvider.GetRequiredService<AppIdentityDbContext>();
 
-            if (context.Database.GetPendingMigrations().Any())
+            if (environment.IsProduction() && context.Database.GetPendingMigrations().Any())
             {
                 context.Database.Migrate();
             }
