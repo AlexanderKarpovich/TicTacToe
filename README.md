@@ -1,7 +1,7 @@
 # TicTacToe
 Игра представляет собой стандартные "Крестики-нолики" для двух игроков с полем 3x3.
 ## API
-[API](https://github.com/AlexanderKarpovich/TicTacToe/tree/dev/TicTacToe.Api) поддерживает передачу данных в формате JSON, а также передачу сообщений через gRPC.
+[API](https://github.com/AlexanderKarpovich/TicTacToe/tree/dev/TicTacToe.Api) поддерживает передачу данных в формате JSON, подключение к хабу SignalR, а также передачу сообщений через gRPC.
 ### Начало работы
 Для того чтобы приступить к работе с API, необходимо произвести настройку сертификата SSL, а также иметь представление о корректном запуске API в разных режимах (Development и Production).
 ##### Настройка SSL сертификата
