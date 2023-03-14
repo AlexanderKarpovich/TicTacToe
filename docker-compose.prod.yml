@@ -29,7 +29,6 @@ services:
 volumes:
   mssql_data:
   mssql_logs:
-  mssql_backup:
   mssql_secrets:
   
 
