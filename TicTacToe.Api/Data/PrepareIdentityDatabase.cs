@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TicTacToe.Api.Models;
 
@@ -11,12 +12,20 @@ namespace TicTacToe.Api.Data
 
         public static async Task EnsurePopulated(IApplicationBuilder app, IWebHostEnvironment environment)
         {
-            AppIdentityDbContext context = app.ApplicationServices.CreateScope()
-                .ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+            using var scope = app.ApplicationServices.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<PrepareIdentityDatabase>>();
 
             if (environment.IsProduction() && context.Database.GetPendingMigrations().Any())
             {
-                context.Database.Migrate();
+                try
+                {
+                    context.Database.Migrate();
+                }
+                catch (SqlException ex)
+                {
+                    logger.LogInformation($"Sql exception: {ex.Message}");
+                }
             }
 
             UserManager<GameUser> userManager = app.ApplicationServices.CreateScope()

@@ -1,8 +1,9 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace TicTacToe.Api.Data
 {
-    public static class PrepareGamesDatabase
+    public class PrepareGamesDatabase
     {
         public static void PrepareDatabase(IApplicationBuilder app, IWebHostEnvironment environment)
         {
@@ -11,10 +12,18 @@ namespace TicTacToe.Api.Data
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<GamesDbContext>();
-                    
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<PrepareGamesDatabase>>();
+
                     if (context.Database.GetPendingMigrations().Any())
                     {
-                        context.Database.Migrate();
+                        try
+                        {
+                            context.Database.Migrate();
+                        }
+                        catch (SqlException ex)
+                        {
+                            logger.LogInformation($"Sql exception: {ex.Message}");
+                        }
                     }
                 }
             }
