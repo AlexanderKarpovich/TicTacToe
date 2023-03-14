@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+builder.Services.AddGrpc();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 if (builder.Environment.IsProduction())
@@ -64,6 +65,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<GamesHub>("/hub/games");
+app.MapGrpcService<GamesGrpcService>();
 
 PrepareGamesDatabase.PrepareDatabase(app, app.Environment);
 await PrepareIdentityDatabase.EnsurePopulated(app, app.Environment);
