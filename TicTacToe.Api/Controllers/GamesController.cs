@@ -38,7 +38,7 @@ namespace TicTacToe.Api.Controllers
             return gameSessions;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{gameSessionId}")]
         [ProducesResponseType(typeof(GameSessionReadDto), StatusCodes.Status200OK, "application/json")]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound, "text/plain")]
         public ActionResult<GameSessionReadDto> GetGameSessionById(int gameSessionId)
